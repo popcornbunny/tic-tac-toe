@@ -1,6 +1,6 @@
 # tic-tac-toe
 
-This is the code for Computer Networks Project 1
+This is the code for Computer Networks Project 1<br/>
 Contributors: Katelyn Hanft, Faith Wilson, Alexa Hoover
 
 The Rubric is as follows:
