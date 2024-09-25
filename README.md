@@ -1,16 +1,17 @@
 # tic-tac-toe
 
 This is the code for Computer Networks Project 1
-Contributers: Katelyn Hanft, Faith Wilson, Alexa Hoover
+Contributors: Katelyn Hanft, Faith Wilson, Alexa Hoover
 
 The Rubric is as follows:
 
 Programming Assignment 1 Grading Rubric
 Code Formatting:
-_______ is well commented and formatted\n
-_______ is well structured and good naming\n
+_______ is well commented and formatted
+_______ is well structured and good naming
 _______ has contributing coder(s) full name(s) at the top of the files.
-Functionality (each are worth 2 points): ______
+
+Functionality (each are worth 2 points):
 _______ Able to connect between itself (e.g. Java w/ Java)
 _______ Able to connect between all version (e.g. Java w/ C, Java w/ Python, etc)
 _______ Able to send at least one move between the players (any one pairing of the game)
