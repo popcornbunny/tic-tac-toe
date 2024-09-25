@@ -7,8 +7,8 @@ The Rubric is as follows:
 
 Programming Assignment 1 Grading Rubric
 Code Formatting:
-_______ is well commented and formatted
-_______ is well structured and good naming
+_______ is well commented and formatted\n
+_______ is well structured and good naming\n
 _______ has contributing coder(s) full name(s) at the top of the files.
 Functionality (each are worth 2 points): ______
 _______ Able to connect between itself (e.g. Java w/ Java)
