@@ -1,3 +1,7 @@
+from socket import *
+# ask user for IP if it is an "online" game
+#use section 2.7 of the book for the server and client code
+# create a server and client python file (server.py and client.py)
 
 #  This class provides support for playing a Tic Tac Toe game,
 #  but doesn't enforce which player goes when.  It does protect
@@ -111,7 +115,7 @@ class Play:
 
     net = input("Would you like to play over the network? (Y/N) ")
 
-    if net == N:
+    if net == 'N' or net == 'n' or net == 'No' or net == 'no':
         print("Player 1, you are 0! Player 2, you are X!")
         TicTacToe.setPlayer(p1, 0)
         TicTacToe.setPlayer(p2, 1)
