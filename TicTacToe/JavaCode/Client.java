@@ -1,52 +1,43 @@
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 
 public class Client {
-    public static Client client()
-            throws Exception
-    {
+    private static final String SERVER_ADDRESS = "localhost";
+    private static final int PORT = 2000;
 
-        // Create client socket
-        Socket s = new Socket("localhost", 888);
+    public void client() throws Exception {
+        System.out.println("Connecting to the Tic-Tac-Toe server...");
+        Socket socket = new Socket(SERVER_ADDRESS, PORT);
+        System.out.println("Connected to server at " + SERVER_ADDRESS + " on port " + PORT);
 
-        // to send data to the server
-        DataOutputStream dos
-                = new DataOutputStream(
-                s.getOutputStream());
+        BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
 
-        // to read data coming from the server
-        BufferedReader br
-                = new BufferedReader(
-                new InputStreamReader(
-                        s.getInputStream()));
+        String serverMessage;
 
-        // to read data from the keyboard
-        BufferedReader kb
-                = new BufferedReader(
-                new InputStreamReader(System.in));
-        String str, str1;
+        while ((serverMessage = input.readLine()) != null) {
+            System.out.println(serverMessage);  // Display the message from the server
 
-        // repeat as long as exit
-        // is not typed at client
-        while (!(str = kb.readLine()).equals("exit")) {
+            // If the message contains "win" or "draw", the game is over
+            if (serverMessage.contains("win") || serverMessage.contains("draw")) {
+                System.out.println("\nGame over. Closing connection.");
+                break;
+            }
 
-            // send to the server
-            dos.writeBytes(str + "\n");
+            // When asked to move read in input
+            if (serverMessage.contains("Enter your move (row col):")) {
+                String move = userInput.readLine();
 
-            // receive from the server
-            str1 = br.readLine();
-
-            System.out.println(str1);
+                // write move to server
+                output.write(move);
+                output.newLine();
+                output.flush();
+            }
         }
-
-        // close connection.
-        dos.close();
-        br.close();
-        kb.close();
-        s.close();
-
-        return null;
+    }
+    public static void main(String[] args) throws Exception {
+        Client client = new Client();
+        client.client();
     }
 }
