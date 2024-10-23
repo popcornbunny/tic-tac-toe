@@ -1,3 +1,8 @@
+/**
+ * author Faith Wilson
+ * Tic-Tac-Toe Client
+ */
+
 import java.io.*;
 import java.net.Socket;
 
@@ -34,6 +39,7 @@ public class Client {
                 output.newLine();
                 output.flush();
             }
+
         }
     }
     public static void main(String[] args) throws Exception {
