@@ -106,36 +106,29 @@ class TicTacToe:
             board += "-------\n"
         return board
 
-class Play:
-    TicTacToe.__init__(p1)
-    TicTacToe.initializeBoard(p1)
+def play(p1, p2):
+    __init__(newGame)
+    initializeBoard(newGame)
 
-    TicTacToe.__init__(p2)
-    TicTacToe.initializeBoard(p2)
+    setPlayer(newGame, 0)  # Player 1 is 'O'
+    setPlayer(newGame, 1)  # Player 2 is 'X'
 
-    net = input("Would you like to play over the network? (Y/N) ")
+    while not checkForWin(newGame):
+        if checkForWin(p2):
+            print("Congrats, Player 2 won!")
+            resetGame(p1)
+            resetGame(p2)
+        else:
+            r, c = input("Player 1's turn! (# #) ").split()
+            makeMove(p1, r, c)
+            toString(p1)
 
-    if net == 'N' or net == 'n' or net == 'No' or net == 'no':
-        print("Player 1, you are 0! Player 2, you are X!")
-        TicTacToe.setPlayer(p1, 0)
-        TicTacToe.setPlayer(p2, 1)
-
-        while not TicTacToe.checkForWin(p1) or not TicTacToe.checkForWin(p2):
-            if TicTacToe.checkForWin(p2):
-                print("Congrats, Player 2 won!")
-                TicTacToe.resetGame(p1)
-                TicTacToe.resetGame(p2)
-            else:
-                r, c = input("Player 1's turn! (# #) ").split()
-                TicTacToe.makeMove(p1, r, c)
-                TicTacToe.toString(p1)
-
-            if TicTacToe.checkForWin(p1):
-                print("Congrats, Player 1 won!")
-                TicTacToe.resetGame(p1)
-                TicTacToe.resetGame(p2)
-            else:
-                r, c = input("Player 2's turn! (# #) ").split()
-                TicTacToe.makeMove(p2, r, c)
-                TicTacToe.toString(p2)
+        if checkForWin(p1):
+            print("Congrats, Player 1 won!")
+            resetGame(p1)
+            resetGame(p2)
+        else:
+            r, c = input("Player 2's turn! (# #) ").split()
+            makeMove(p2, r, c)
+            toString(p2)
 

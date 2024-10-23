@@ -1,3 +1,6 @@
+# Server for TicTacToe game
+# Author: Katelyn Hanft
+
 from socket import *
 import TicTacToe.py
 import threading
@@ -5,11 +8,15 @@ import threading
 HOST = '127.0.0.1' #localhost
 PORT = 5000        #port
 
+# Log to store each move
+logFile = "log.txt"
 clients = []
 game = TicTacToe.__init__(p1)
 
 def handleClient(client, addr):
     print('Connected to', addr)
+    log = open(logFile, 'a')
+    log.write(f'Connected to {addr}\n')
     while True:
         data = client.recv(1024)
         if not data:
@@ -40,4 +47,5 @@ def startServer():
             clients.append(client)
             threading.Thread(target=handleClient, args=(client, addr)).start()
 
-   
+def main():
+    startServer()
