@@ -1,5 +1,10 @@
+/**
+ * author Faith Wilson
+ * Tic-Tac-Toe Server
+ */
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 public class Server {
     private TicTacToe game;
@@ -77,7 +82,7 @@ public class Server {
                 logMove(currentPlayer, row, col, ip1.getHostAddress(), ip2.getHostAddress());
 
                 if (game.checkForWin()) {
-                    psCurrent.println("You are the Winner");
+                    psCurrent.println("You are the Winner!");
                     if (currentPlayer == 0) {
                         psPlayer2.println("You have lost");
                     } else {
@@ -110,7 +115,10 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException {
-        Server server = new Server(2000);
+        System.out.print("Enter your port number ");
+        Scanner scan = new Scanner(System.in);
+        int portNum = scan.nextInt();
+        Server server = new Server(portNum);
         server.serverStart();
     }
 }
