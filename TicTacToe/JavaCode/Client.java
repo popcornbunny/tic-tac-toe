@@ -52,6 +52,7 @@ public class Client {
         System.out.print("Enter your port number : ");
         int portNum = scan.nextInt();
 
+
         client.client(ipAddress,portNum);
     }
 }
