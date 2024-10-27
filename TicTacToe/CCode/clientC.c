@@ -1,99 +1,102 @@
-// Alexa Hoover C version, Computer Networking 10/23/24
-
+//
+// Author Alexa Hoover,
+//  Faith Wilson
+//  TicTacToe Client
+//
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <arpa/inet.h>
 #include <unistd.h>
+#include <arpa/inet.h>
+#include <string.h>
+#include <stdlib.h>
+#define BUFFER_SIZE 1024
+#define MAX_LINE_LENGTH 1024
 
-char messageLog[1024 * 10] = "";
+int read_line(int sockfd, char *buffer, int max_length) {
+    int bytes_read = 0;
+    char c;
 
-void logMessage(const char *message) {
-    strcat(messageLog, message);
-    strcat(messageLog, "\n");
-}
+    while (bytes_read < max_length - 1) {
+        int result = recv(sockfd, &c, 1, 0);
 
-int main() {
-    int sock = 0;
-    struct sockaddr_in serv_addr;
-    char buffer[1024] = {0};
-    int row, col;
-    char replay_choice[10];
-    int replay = 1;
-
-    // Create client socket
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        printf("\n Socket creation error \n");
-        return -1;
-    }
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(8080);
-
-    if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
-        printf("\nInvalid address/ Address not supported \n");
-        return -1;
-    }
-
-    // Connect to server
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
-
-    while (replay) {
-        // Game loop
-        while (1) {
-           
-            printf("Enter your move (row col): ");
-            scanf("%d %d", &row, &col);
-
-            // Send move to the server
-            char move[100];
-            snprintf(move, sizeof(move), "%d %d", row, col);
-            send(sock, move, strlen(move), 0);
-            logMessage(move);
-
-            // Receive message from the server
-            memset(buffer, 0, sizeof(buffer));
-            int bytes_read = read(sock, buffer, sizeof(buffer));
-            if (bytes_read <= 0) {
-                printf("Server disconnected.\n");
-                close(sock);
-                return 0;
-            }
-
-            printf("Server response:\n%s\n", buffer);
-            logMessage(buffer);
-
-            if (strstr(buffer, "WIN") != NULL) {
-                printf("Player %c wins!\n", buffer[4]); // buffer[4] will be the winner ('X' or 'O')
-                break;
-            } else if (strstr(buffer, "TIE") != NULL) {
-                printf("It's a tie!\n");
-                break;
-            } else if (strstr(buffer, "INVALID") != NULL) {
-                printf("Invalid move! Try again.\n");
-            }
+        if (result <= 0) {
+            // Error or connection closed
+            return result;
         }
 
-        printf("Replay? (yes/no): ");
-        scanf("%s", replay_choice);
+        buffer[bytes_read++] = c;
 
-        send(sock, replay_choice, strlen(replay_choice), 0);
-        logMessage(replay_choice);
-
-        if (strncmp(replay_choice, "yes", 3) == 0) {
-            replay = 1;
-        } else {
-            replay = 0;
+        if (c == '\n') {
             break;
         }
     }
 
-    // Message log (DONES'T WORK)
-    printf("\nMessage Log:\n%s\n", messageLog);
+    buffer[bytes_read] = '\0';
+    return bytes_read;
+}
 
-    close(sock);
+
+
+void handle_game(int sockfd) {
+    char buffer[BUFFER_SIZE];
+    char sendBuffer[BUFFER_SIZE];
+    int row, col;
+    //read a line from the server
+    int bytes_read;
+
+
+    while (1) {
+        memset(buffer, 0, sizeof(buffer));
+        memset(sendBuffer, 0, sizeof(sendBuffer));
+        //read messages
+        while ((bytes_read = read_line(sockfd, buffer, MAX_LINE_LENGTH)) > 0) {
+            printf("Received: %s", buffer);
+            break; //bread out of the read to see if we need to do anything
+        }
+        //for each line from the server, check to see what to do
+
+        if (strstr(buffer, "wins") != NULL || strstr(buffer, "disconnected") != NULL) {
+            break; // Exit loop if the game is over
+        }
+        if (strstr(buffer, "Enter your move") != NULL) {
+            printf("Enter your move (row col): ");
+
+            if (fgets(sendBuffer, sizeof(sendBuffer), stdin) != NULL) {
+                printf("You entered: %s", sendBuffer);
+            } else {
+                printf("Error reading input.");
+            }
+            write(sockfd, sendBuffer, strlen(sendBuffer));
+        }
+    }
+}
+int main() {
+
+    int sockfd;
+    struct sockaddr_in server_addr;
+
+    // Create socket
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) {
+        perror("Socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+    // Specify server address
+    memset(&server_addr, '\0', sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(3000); // Replace with your server port
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); // Change to>
+    // Connect to the server
+    int connfd;
+    connfd = connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    if (connfd < 0)
+    {
+        close(sockfd);
+        exit(EXIT_FAILURE);
+    }
+
+// Handle game loop
+    handle_game(sockfd);
+// Close socket
+    close(sockfd);
     return 0;
 }
