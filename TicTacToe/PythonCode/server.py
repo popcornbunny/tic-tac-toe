@@ -1,108 +1,108 @@
 # Server for TicTacToe game
-# Author: Katelyn Hanft
+# Authors: Katelyn Hanft and Faith Wilson
 
-from socket import *
-import TicTacToe.py
-import threading
-#157.160.151.206
-host = '127.0.0.1' #localhost - change to my IP
-#port = 5000        #port
+import socket
+import TicTacToe
 
-# Log to store each move
+host = socket.gethostbyname(socket.gethostname())  # gets IP Address
+
+# Log file that stores each move
 logFile = "log.txt"
 
-game = TicTacToe.__init__(p1)
+# Starts a new game of TicTacToe
+game = TicTacToe.TicTacToe()
 
+# Starts the server and connects to two players
 def startServer(port):
+    global game
+    game.resetGame()
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ss:
-        ss.bind((host, port))
+        ss.bind((host, int(port)))
         ss.listen()
-        print('Server started on port', port)
+        print('Server started on IP', socket.gethostbyname(socket.gethostname()), "with port", str(port))
+
         player1, addr1 = ss.accept()
-        with player1:
-            print(f"Connected to Player 1 at {addr1}")
+        print(f"Connected to Player 1 at {addr1}")
+        player1.sendall("Welcome, you are Player 1".encode())
+
         player2, addr2 = ss.accept()
-        with player2:
-            print(f"Connected to Player 2 at {addr2}")
+        print(f"Connected to Player 2 at {addr2}")
+        player2.sendall("Welcome, you are Player 2".encode())
+    return player1, addr1, player2, addr2
 
-        # Handle clients
-        player1 = 0
-        player2 = 1
-        currentPlayer = player1
-        running = True
+# Plays the game of TicTacToe between two players and logs each move
+def playGame(p1, a1, p2, a2):
+    currentPlayer = 0
+    running = True
 
-        while running:
-            print(f"Player 0: 0     Player 1: X")
-            print(f"")
+    while running:
+        if currentPlayer == 0:
+            player = p1
+        else:
+            player = p2
 
+        player.sendall("Player 0: 0       Player 1: X".encode())
+        player.sendall(("It is your turn Player " + str(currentPlayer)).encode() + "\n".encode())
+        player.sendall("Enter your move (row col): ".encode())
 
+        print("Waiting for player ", currentPlayer, " to make a move...")
 
+        move = player.recv(1024).decode()
+        print("Player ", currentPlayer, " entered move: ", move)
 
-def main():
-    startServer()
+        moveRaC = move.split(" ")
+        row = int(moveRaC[0])
+        col = int(moveRaC[1])
 
-# ChatGPT
+        game.setPlayer(currentPlayer)
+        if game.makeMove(row, col):
+            ip1 = a1[0]
+            ip2 = a2[0]
 
-def handle_client(conn, addr, game, player_id):
-    conn.sendall(f"Player 1: O, Player 2: X\n".encode('utf-8'))
-    conn.sendall(f"Welcome Player {player_id}!\n".encode('utf-8'))
-    while True:
-        conn.sendall(f"Game Board:\n{game}\n".encode('utf-8'))
-        conn.sendall(f"It is your turn, Player {player_id}. Enter your move (row col): ".encode('utf-8'))
+            entry = "Current player " + str(currentPlayer) + " ip: " + ip1 + " made a move at row " + str(row) + " and column " + str(col) + " against " + ip2
+            p1.sendall(entry.encode())
+            p2.sendall(entry.encode())
+            logMove(entry)
 
-        move = conn.recv(1024).decode('utf-8')
-        try:
-            row, col = map(int, move.split())
-            game.set_player(player_id)
-
-            if game.make_move(row, col):
-                if game.check_for_win():
-                    conn.sendall("You are the winner!\n".encode('utf-8'))
-                    broadcast_game(game)
-                    break
+            if game.checkForWin():
+                player.sendall("You are the winner!\n".encode())
+                if currentPlayer == 0:
+                    p2.sendall("You have lost\n".encode())
                 else:
-                    broadcast_game(game)
+                    p1.sendall("You have lost\n".encode())
+                running = False
             else:
-                conn.sendall("Invalid move. Try again.\n".encode('utf-8'))
-        except ValueError:
-            conn.sendall("Invalid input format. Please enter your move as 'row col'.\n".encode('utf-8'))
+                if currentPlayer == 0:
+                    currentPlayer = 1
+                else:
+                    currentPlayer = 0
+        else:
+            player.sendall("Invalid move, try again".encode())
 
-    conn.close()
+        p1.sendall(game.toString().encode())
+        p2.sendall(game.toString().encode()) # change to print tostring if needed
+    p1.sendall("\n*A new game is beginning*\n".encode())
+    p2.sendall("\n*A new game is beginning*\n".encode())
+    game.resetGame()
+    playGame()
 
+    p1.close()
+    p2.close()
+    ss.close()
 
-def broadcast_game(game):
-    # Broadcast the updated game state to both players
-    for conn in clients:
-        conn.sendall(f"Game Board:\n{game}\n".encode('utf-8'))
+    print("Server closed, game over.")
 
+# Logs each move made by the players
+def logMove(entry):
+    print(entry)
+    with open(logFile, "a") as log:
+        log.write(entry + "\n")
 
-def startServer(port):
-    game = TicTacToe.play(p1, p2)
-    game.reset_game()
-
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((HOST, port))
-    server_socket.listen(2)
-    print(f"Server started on port {port}. Waiting for players to connect...")
-
-    global clients
-    clients = []
-
-    # Accept player 1
-    player1, addr1 = server_socket.accept()
-    print(f"Player 1 connected from {addr1}")
-    clients.append(player1)
-    player1_id = 0
-
-    # Accept player 2
-    player2, addr2 = server_socket.accept()
-    print(f"Player 2 connected from {addr2}")
-    clients.append(player2)
-    player2_id = 1
-
-    server_socket.close()
-    print("Game over. Connections closed.")
-
+# Main function that starts the server and plays the game
+def main():
+    port = input("Please enter your port number: ")
+    play1, a1, play2, a2 = startServer(port)
+    playGame(play1, a1, play2, a2)
 
 if __name__ == "__main__":
-    start_server(2000)
+    main()

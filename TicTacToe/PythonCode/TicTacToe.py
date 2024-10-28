@@ -7,6 +7,10 @@ from socket import *
 #  but doesn't enforce which player goes when.  It does protect
 #  the board so a player can't change another player's move or
 #  mark the same place twice.
+#
+# Author: Dr. Girard
+# Edited by Katelyn Hanft
+
 class TicTacToe:
     max = 3
 ##	  ' ' - Blank place
@@ -32,7 +36,7 @@ class TicTacToe:
 
     def resetGame(self):
         self.game_board.clear()
-        initializeBoard(self)
+        self.initializeBoard()
         self.player_move = -1
 
     def setPlayer(self, player):
@@ -57,14 +61,14 @@ class TicTacToe:
 ##	  @param c Column player is making a move.
 ##	  @return True if the game_board was updated, false otherwise.
     def makeMove(self, r, c):
-        success = false
-        if game_board[r][c] == ' ':
-            if player_move == 0:
+        success = False
+        if self.game_board[r][c] == ' ':
+            if self.player_move == 0:
                 self.game_board[r][c] = 'O'
-                success = true
-            if player_move == 1:
+                success = True
+            if self.player_move == 1:
                 self.game_board[r][c] = 'X'
-                success = true
+                success = True
         return success
 
 
@@ -83,14 +87,14 @@ class TicTacToe:
             if (board[r][0] == win_token) and (board[r][1] == win_token) and (board[r][2] == win_token):
                 win = True
     
-        for c in range(self.__max):
+        for c in range(self.max):
             if (board[0][c] == win_token) and (board[1][c] == win_token) and (board[2][c] == win_token):
                 win = True
 
         if (board[0][0] == win_token) and (board[1][1] == win_token) and (board[2][2] == win_token):
             win = True
 
-        if (game_board[0][2] == win_token) and (board[1][1] == win_token) and (board[2][0] == win_token):
+        if (board[0][2] == win_token) and (board[1][1] == win_token) and (board[2][0] == win_token):
             win = True
         return win
 

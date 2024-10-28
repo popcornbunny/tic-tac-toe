@@ -1,0 +1,11 @@
+Current player <socket.socket fd=1144, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53587)> ip: 157.160.151.206 made a move at row 1 and column 0 against 157.160.151.206
+Current player <socket.socket fd=1148, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53601)> ip: 157.160.151.206 made a move at row 0 and column 1 against 157.160.151.206
+Current player <socket.socket fd=1156, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53605)> ip: 157.160.151.206 made a move at row 1 and column 0 against 157.160.151.206
+Current player <socket.socket fd=1092, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53623)> ip: 157.160.151.206 made a move at row 1 and column 0 against 157.160.151.206
+Current player <socket.socket fd=1080, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53637)> ip: 157.160.151.206 made a move at row 1 and column 0 against 157.160.151.206
+Current player <socket.socket fd=1084, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53638)> ip: 157.160.151.206 made a move at row 0 and column 0 against 157.160.151.206
+Current player <socket.socket fd=1080, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53637)> ip: 157.160.151.206 made a move at row 1 and column 1 against 157.160.151.206
+Current player <socket.socket fd=1084, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53638)> ip: 157.160.151.206 made a move at row 2 and column 1 against 157.160.151.206
+Current player <socket.socket fd=1080, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53637)> ip: 157.160.151.206 made a move at row 2 and column 0 against 157.160.151.206
+Current player <socket.socket fd=1084, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53638)> ip: 157.160.151.206 made a move at row 0 and column 1 against 157.160.151.206
+Current player <socket.socket fd=1080, family=2, type=1, proto=0, laddr=('157.160.151.206', 3000), raddr=('157.160.151.206', 53637)> ip: 157.160.151.206 made a move at row 0 and column 2 against 157.160.151.206

@@ -1,46 +1,37 @@
 # Client side of the TicTacToe game
-# Author: Katelyn Hanft
+# Authors: Katelyn Hanft and Faith Wilson
 
-from socket import *
-import TicTacToe.py
-import threading
+import socket
+import TicTacToe
 
 # First player to connect is player 1, other is player 2
+# Function to connect to the server and play the game
+def runClient(host, port):
+    print("Connecting to the Tic-Tac-Toe server...")
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((host, port))
+        print("Connected to server at " + host + " on port " + str(port))
+        msg = s.recv(1024).decode()
 
-def receiveData(sock):
-    while True:
-        try:
-            data = sock.recv(1024).decode() #Receive data from the server
-            if not data:
-                break
-            print(data)
-            if ("Enter your move" in data):
-                return # If it is the player's turn, return to allow input
-        except socket.error:
-            print("Error receiving data from the server")
-            break
+        while "win" not in msg or "draw" not in msg:
+            if msg is not None:
+                print(msg)
+            if "Enter your move" in msg:
+                move = input()
+                s.sendall(move.encode())
+            msg = s.recv(1024).decode()
 
+        if "win" in msg or "draw" in msg:
+            print("\nGame over. Closing connection.")
+            s.close()
+
+# Main function to run the client
 def main():
-    serverHost = input("Enter the host IP address: ")
+    serverHost = input("Enter the IP address you want to connect to: ")
     serverPort = int(input("Enter the port number: "))
 
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Create socket
-        sock.connect((serverHost, serverPort)) #Connect to the server
-        print("Connected to the server at ", serverHost, " on port ", serverPort)
+    runClient(serverHost, serverPort)
 
-        while True:
-            receiveData(sock) #Display data from server
-            move = input("Enter your move (row col): ") #Take move from user
-            sock.sendall(move.encode()) #Send move to server
-
-            receiveData(sock) #Display data from server
-
-    except socket.error as e:
-        print(f"Connection error: {e}")
-    finally:
-        sock.close() #Close the socket
-        print("Connection closed")
 
 if __name__ == "__main__":
     main()
