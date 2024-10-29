@@ -16,14 +16,21 @@ def runClient(host, port):
         while "win" not in msg or "draw" not in msg:
             if msg is not None:
                 print(msg)
+            else:
+                print("Goodbye!")
+                s.close()
+                break
             if "Enter your move" in msg:
                 move = input()
                 s.sendall(move.encode())
+            if "play again" in msg:
+                s.sendall(input().encode())
+
             msg = s.recv(1024).decode()
 
-        if "win" in msg or "draw" in msg:
-            print("\nGame over. Closing connection.")
-            s.close()
+        # If the game is over, close the connection
+        s.close()
+        print("\nGame over. Closing connection.")
 
 # Main function to run the client
 def main():
@@ -31,7 +38,6 @@ def main():
     serverPort = int(input("Enter the port number: "))
 
     runClient(serverHost, serverPort)
-
 
 if __name__ == "__main__":
     main()
